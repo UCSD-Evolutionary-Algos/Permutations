@@ -33,10 +33,29 @@ impl Organism {
         for i in 0..len {
             let v = b.vals[i];
             if !set.contains(&v) {
+                // TODO: Investigate (potentially cut and pattern?)
+                if cut >= len {
+                    panic!("Invalid permutation");
+                }
                 self.vals[cut] = v;
                 set.insert(v);
                 cut += 1;
             }
+        }
+    }
+    pub fn cut_and_pattern(&mut self, a: &Organism, b: &Organism) {
+        let len = self.vals.len();
+        let mut rng = rand::thread_rng();
+        let cut = rng.gen_range(0..len);
+        let base = &b.vals[cut..];
+        let mut sorted = base.to_vec();
+        sorted.sort();
+        let relative = base
+            .iter()
+            .map(|x| sorted.iter().position(|y| x == y).unwrap())
+            .collect::<Vec<usize>>();
+        for i in cut..len {
+            self.vals[i] = a.vals[cut + relative[i - cut]];
         }
     }
     pub fn flip_and_scan(&mut self, a: &Organism, b: &Organism) {
@@ -74,16 +93,16 @@ impl Organism {
         let mut out = Organism::new(len);
 
         let mut rng = rand::thread_rng();
-        match rng.gen_range(0..=1) {
+        match rng.gen_range(0..=2) {
             0 => {
                 // Cut and crossfill
                 out.cut_and_crossfill(a, b);
             },
-            2 => {
-                // Cut and pattern
-                /* TODO */
-            },
             1 => {
+                // Cut and pattern
+                out.cut_and_pattern(a, b);
+            },
+            2 => {
                 // Flip and scan
                 out.flip_and_scan(a, b);
             }

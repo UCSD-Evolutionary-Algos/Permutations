@@ -31,7 +31,7 @@ impl Species {
             children.push(Organism::new(0));
         }
         children.par_iter_mut().for_each(|r| {
-            let mut rng = rand::thread_rng();
+            // let mut rng = rand::thread_rng();
             // TODO: Investigate genetic diversity
             /*let a = &self.organisms[rng.gen_range((len / 2)..len)];
             let b = &self.organisms[rng.gen_range((len / 2)..len)];*/

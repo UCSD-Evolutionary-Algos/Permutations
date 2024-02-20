@@ -6,6 +6,7 @@ use crate::species::Species;
 
 #[derive(Debug)]
 pub struct Population {
+    generation: usize,
     species: Vec<Species>,
 }
 
@@ -16,6 +17,7 @@ impl Population {
             v.push(Species::new(orgs_per_species, perm_len));
         }
         Population {
+            generation: 0,
             species: v,
         }
     }
@@ -24,6 +26,7 @@ impl Population {
             .for_each(|s| s.evaluate(p));
     }
     pub fn next_gen(&mut self) {
+        self.generation += 1;
         self.species.par_iter_mut()
             .for_each(|s| s.next_gen());
     }
